@@ -143,7 +143,7 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main className="bg-gray-100" style={{ minHeight: '100dvh' }}>
       <div className="min-h-screen bg-gray-100">
         <div className="container mx-auto px-4 pt-14 pb-6 max-w-3xl">
 

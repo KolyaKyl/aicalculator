@@ -10,10 +10,20 @@
   --foreground: #ededed;
 }
 
+/* Фикс для Safari на iOS */
+html {
+  background-color: #f3f4f6; /* твой серый цвет */
+  min-height: -webkit-fill-available;
+}
+
 body {
-  background: var(--background);
+  background-color: #f3f4f6;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 @keyframes gradientShift {
