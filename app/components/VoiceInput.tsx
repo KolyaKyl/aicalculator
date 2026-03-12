@@ -13,9 +13,10 @@ declare global {
 interface VoiceInputProps {
   onResult: (text: string) => void;
   isSquare?: boolean;
+  fullWidth?: boolean;
 }
 
-export default function VoiceInput({ onResult, isSquare = false }: VoiceInputProps) {
+export default function VoiceInput({ onResult, isSquare = false, fullWidth = false }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
 
@@ -61,11 +62,12 @@ export default function VoiceInput({ onResult, isSquare = false }: VoiceInputPro
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full">
       <button
         onClick={toggleListening}
         className={`
-          w-14 h-14 flex items-center justify-center transition-all duration-300 relative overflow-hidden
+          ${fullWidth ? 'w-full py-3' : 'w-14 h-14'}
+          flex items-center justify-center transition-all duration-300 relative overflow-hidden
           ${isSquare ? 'rounded-xl' : 'rounded-full'}
           ${isListening 
             ? 'animate-gradientShift scale-110 shadow-lg' 

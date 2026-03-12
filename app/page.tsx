@@ -166,8 +166,8 @@ export default function Home() {
             WHAT TO CALCULATE?
           </div>
 
-          {/* Input row */}
-          <div className="flex items-start gap-2">
+          {/* Input row - десктоп версия (микрофон слева) */}
+          <div className="hidden md:flex items-start gap-2">
             <div className="flex-shrink-0">
               <VoiceInput onResult={handleVoiceResult} isSquare={true} />
             </div>
@@ -198,11 +198,54 @@ export default function Home() {
               disabled={!inputText.trim() || loading}
               className={`flex-shrink-0 w-14 h-14 rounded-xl font-medium transition-all flex items-center justify-center ${inputText.trim() && !loading
                   ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 text-white hover:shadow-md'
-                  : 'bg-gray-200 text-gray-600 cursor-not-allowed'
+                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
                 }`}
             >
               <SendIcon />
             </button>
+          </div>
+
+          {/* Input row - мобильная версия (микрофон снизу) */}
+          <div className="md:hidden space-y-2">
+            {/* Верхняя строка: поле ввода + кнопка отправки */}
+            <div className="flex items-center gap-2">
+              <div className="flex-1 relative">
+                <textarea
+                  ref={inputRef}
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g. 15% of 2340"
+                  rows={1}
+                  className="w-full p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12 resize-none overflow-y-auto min-h-[56px] max-h-[80px]"
+                  style={{ lineHeight: '1.5' }}
+                />
+                {inputText && (
+                  <button
+                    onClick={clearInput}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                disabled={!inputText.trim() || loading}
+                className={`flex-shrink-0 w-14 h-14 rounded-xl font-medium transition-all flex items-center justify-center ${inputText.trim() && !loading
+                    ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 text-white hover:shadow-md'
+                    : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  }`}
+              >
+                <SendIcon />
+              </button>
+            </div>
+
+            {/* Нижняя строка: микрофон на всю ширину */}
+            <div className="w-full">
+              <VoiceInput onResult={handleVoiceResult} isSquare={true} fullWidth={true} />
+            </div>
           </div>
 
           {loading && (
