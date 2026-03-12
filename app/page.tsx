@@ -280,7 +280,7 @@ export default function Home() {
                           }, 1000);
                         }
                       }}
-                      className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       title="Copy result"
                     >
                       <span className="icon-container block w-5 h-5">
@@ -290,7 +290,7 @@ export default function Home() {
                   )}
                   <button
                     onClick={() => setResult(null)}
-                    className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     title="Close"
                   >
                     <span className="block w-5 h-5">
@@ -326,7 +326,7 @@ export default function Home() {
                       {result.type === 'reasoning' && (
                         <div className="text-center">
                           <span className="text-4xl font-light text-blue-600">
-                            ${typeof result.answer === 'number' ? result.answer.toFixed(2) : result.answer}
+                            {typeof result.answer === 'number' ? result.answer.toFixed(2) : result.answer}
                           </span>
                         </div>
                       )}

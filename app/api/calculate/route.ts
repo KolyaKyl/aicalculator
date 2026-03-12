@@ -98,8 +98,6 @@ Return: {"type":"unknown","message":"I'm a calculator and can only help with cal
   - If the query is in Russian → ALL text must be in Russian
   - NEVER mix languages in the response
   - For word problems and logit tasks, solve step by step and show the reasoning
-  - NEVER include units to ANY part of the response (including answer, steps and description) unless the user explicitly typed them.
-  - NEVER include currency symbols ($, €, ₽, £) in ANY part of the response (including answer, steps and description) unless the user explicitly typed them.
   - Return ONLY valid JSON`
         },
         { role: 'user', content: query }
@@ -154,6 +152,7 @@ Return: {"type":"unknown","message":"I'm a calculator and can only help with cal
             message: 'Could not evaluate the expression'
           });
         }
+
       case 'reasoning':
         return NextResponse.json({
           type: 'reasoning',
