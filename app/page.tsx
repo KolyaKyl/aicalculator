@@ -197,8 +197,8 @@ export default function Home() {
               onClick={handleSubmit}
               disabled={!inputText.trim() || loading}
               className={`flex-shrink-0 w-14 h-14 rounded-xl font-medium transition-all flex items-center justify-center ${inputText.trim() && !loading
-                  ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 text-white hover:shadow-md'
-                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 text-white hover:shadow-md'
+                : 'bg-gray-300 text-gray-600 cursor-not-allowed'
                 }`}
             >
               <SendIcon />
@@ -207,8 +207,8 @@ export default function Home() {
 
           {/* Input row - мобильная версия (микрофон снизу) */}
           <div className="md:hidden space-y-2">
-            {/* Верхняя строка: поле ввода + кнопка отправки */}
-            <div className="flex items-center gap-2">
+            {/* Верхняя строка: поле ввода + кнопка отправки - выровнены по верхнему краю */}
+            <div className="flex items-start gap-2">
               <div className="flex-1 relative">
                 <textarea
                   ref={inputRef}
