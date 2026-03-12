@@ -95,7 +95,7 @@ Return: {"type":"unknown","message":"I'm a calculator and can only help with cal
  IMPORTANT: 
   - Use the SAME LANGUAGE as the query for ALL text (steps, description)
   - For word problems and logit tasks, solve step by step and show the reasoning
-  - do not add currency or units to the answer unless the user explicitly mentioned them in the query.
+  - NEVER add currency symbols or units to the answer or in ANY part of the response (including steps and description) unless the user explicitly typed them in the Query.
   - Return ONLY valid JSON`
         },
         { role: 'user', content: query }
