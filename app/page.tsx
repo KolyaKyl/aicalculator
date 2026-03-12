@@ -2,7 +2,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import VoiceInput from './components/VoiceInput';
+import VoiceInput, { LanguageSelector } from './components/VoiceInput';
+
 
 interface ResultData {
   type?: 'math' | 'calculated' | 'unknown' | 'reasoning';
@@ -16,6 +17,7 @@ interface ResultData {
   message?: string;
   error?: string;
   suggestion?: string;
+  
 }
 
 export default function Home() {
@@ -24,6 +26,7 @@ export default function Home() {
   const [result, setResult] = useState<ResultData | null>(null);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedLang, setSelectedLang] = useState('en-US');
 
   const handleVoiceResult = async (text: string) => {
     setQuery(text);
@@ -160,17 +163,28 @@ export default function Home() {
           </div>
 
           {/* Main Card */}
-          <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
+          <div className="bg-white rounded-3xl shadow-lg p-5 mb-4">
 
             {/* WHAT TO CALCULATE? label */}
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-              WHAT TO CALCULATE?
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                WHAT TO CALCULATE?
+              </div>
+
+              {/* Language selector в правом верхнем углу */}
+              <LanguageSelector
+                selectedLang={selectedLang}
+                onLanguageChange={(code) => {
+                  setSelectedLang(code);
+                  // Если нужно обновить язык в VoiceInput
+                }}
+              />
             </div>
 
             {/* Input row - десктоп версия (микрофон слева) */}
             <div className="hidden md:flex items-start gap-2">
               <div className="flex-shrink-0">
-                <VoiceInput onResult={handleVoiceResult} isSquare={true} />
+                <VoiceInput onResult={handleVoiceResult} isSquare={true} language={selectedLang} />
               </div>
 
               <div className="flex-1 relative">
@@ -245,7 +259,7 @@ export default function Home() {
 
               {/* Нижняя строка: микрофон на всю ширину */}
               <div className="w-full">
-                <VoiceInput onResult={handleVoiceResult} isSquare={true} fullWidth={true} />
+                <VoiceInput onResult={handleVoiceResult} isSquare={true} fullWidth={true} language={selectedLang}/>
               </div>
             </div>
 
