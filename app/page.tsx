@@ -180,7 +180,7 @@ export default function Home() {
                 onKeyDown={handleKeyDown}
                 placeholder="e.g. 15% of 2340"
                 rows={1}
-                className="w-full p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12 resize-none overflow-y-auto min-h-[56px] max-h-[80px]"
+                className="w-full p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12 resize-none overflow-y-auto min-h-[56px] max-h-[80px] leading-relaxed"
                 style={{ lineHeight: '1.5' }}
               />
               {inputText && (
@@ -217,7 +217,7 @@ export default function Home() {
                   onKeyDown={handleKeyDown}
                   placeholder="e.g. 15% of 2340"
                   rows={1}
-                  className="w-full p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12 resize-none overflow-y-auto min-h-[56px] max-h-[80px]"
+                  className="w-full p-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 pr-12 resize-none overflow-y-auto min-h-[56px] max-h-[80px] leading-relaxed"
                   style={{ lineHeight: '1.5' }}
                 />
                 {inputText && (
@@ -234,8 +234,8 @@ export default function Home() {
                 onClick={handleSubmit}
                 disabled={!inputText.trim() || loading}
                 className={`flex-shrink-0 w-14 h-14 rounded-xl font-medium transition-all flex items-center justify-center ${inputText.trim() && !loading
-                    ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 text-white hover:shadow-md'
-                    : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 text-white hover:shadow-md'
+                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'
                   }`}
               >
                 <SendIcon />
