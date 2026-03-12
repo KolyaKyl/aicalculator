@@ -74,19 +74,19 @@ export default function Home() {
     {
       icon: '🏠',
       title: 'MORTGAGE AND LOANS',
-      query: 'monthly payment for mortgage 500k at 4% for 30 years',
+      query: 'mortgage 500k 4% 30 years monthly payment',
       color: 'blue'
     },
     {
       icon: '💰',
       title: 'TAXES AND SALARY',
-      query: 'salary 80K, what will be the net salary after taxes',
+      query: 'salary 80K, what will be the net in USA',
       color: 'yellow'
     },
     {
       icon: '🏃',
       title: 'WORKOUT AND NUTRITION',
-      query: 'calories in a bowl of pasta',
+      query: 'calories in 200g of pasta',
       color: 'orange'
     },
     {
@@ -261,7 +261,7 @@ export default function Home() {
 
                 {/* Action buttons */}
                 <div className="absolute top-2 right-2 flex items-center gap-1">
-                  {result.type === 'math' && (
+                  {(result.type === 'math' || result.type === 'reasoning') && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -269,7 +269,32 @@ export default function Home() {
                         const iconContainer = btn.querySelector('.icon-container');
                         const originalContent = iconContainer?.innerHTML || '';
 
-                        const textToCopy = `Your question: "${query}"\nAnswer: ${result.result?.toLocaleString()} ${result.unit || ''}\n\nDetails:\nExpression: ${result.expression || ''}\n${result.type === 'math' && result.steps ? (result.steps as { value: string; meaning: string }[]).map(s => `${s.value} — ${s.meaning}`).join('\n') : ''}\n\nDescription: ${result.description || ''}\n\n— via AI Calculator (aicalculator.cloud)`;
+                        let textToCopy = `Your question: "${query}"\nAnswer: `;
+
+                        if (result.type === 'math') {
+                          textToCopy += `${result.result?.toLocaleString()} ${result.unit || ''}`;
+                        } else if (result.type === 'reasoning') {
+                          if (typeof result.answer === 'object') {
+                            textToCopy += Object.entries(result.answer).map(([k, v]) => `${k}: ${v}`).join(', ');
+                          } else {
+                            textToCopy += result.answer;
+                          }
+                        }
+
+                        textToCopy += `\n\nDetails:\n`;
+
+                        if (result.type === 'math') {
+                          textToCopy += `Expression: ${result.expression || ''}\n`;
+                          if (result.steps) {
+                            textToCopy += (result.steps as any[]).map(s => `${s.value} — ${s.meaning}`).join('\n');
+                          }
+                        } else if (result.type === 'reasoning') {
+                          if (result.steps) {
+                            textToCopy += (result.steps as string[]).join('\n');
+                          }
+                        }
+
+                        textToCopy += `\n\nDescription: ${result.description || ''}\n\n— via AI Calculator (aicalculator.cloud)`;
 
                         navigator.clipboard.writeText(textToCopy);
 
@@ -326,7 +351,15 @@ export default function Home() {
                       {result.type === 'reasoning' && (
                         <div className="text-center">
                           <span className="text-4xl font-light text-blue-600">
-                            {typeof result.answer === 'number' ? result.answer.toFixed(2) : result.answer}
+                            {Array.isArray(result.answer)
+                              ? result.answer.map(v => Number(v).toFixed(2)).join(', ')
+                              : typeof result.answer === 'number'
+                                ? result.answer.toFixed(2)
+                                : typeof result.answer === 'object'
+                                  ? Object.entries(result.answer)
+                                    .map(([k, v]) => `${k}: ${v}`)
+                                    .join(' | ')
+                                  : String(result.answer)}
                           </span>
                         </div>
                       )}
@@ -375,16 +408,36 @@ export default function Home() {
                       )}
                       {result.type === 'reasoning' && (
                         <div className="space-y-3">
-                          {result.steps && result.steps.length > 0 && (
+                          {/* Если answer — объект, показываем его */}
+                          {result.answer && typeof result.answer === 'object' && (
                             <div className="space-y-2">
-                              <div className="text-xs text-gray-500">Reasoning:</div>
-                              {(result.steps as string[]).map((step, idx) => (
-                                <div key={idx} className="text-sm border-l-2 border-blue-200 pl-3">
-                                  <span className="text-gray-700">{step}</span>
+                              <div className="text-xs text-gray-500">Answer breakdown:</div>
+                              {Object.entries(result.answer).map(([key, value]) => (
+                                <div key={key} className="text-sm border-l-2 border-blue-200 pl-3">
+                                  <span className="text-gray-700">{key}: {String(value)}</span>
                                 </div>
                               ))}
                             </div>
                           )}
+
+                          {/* Steps */}
+                          {result.steps && result.steps.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="text-xs text-gray-500">Reasoning:</div>
+                              {result.steps.map((step: any, idx: number) => {
+                                if (typeof step === 'string') {
+                                  return (
+                                    <div key={idx} className="text-sm border-l-2 border-blue-200 pl-3">
+                                      <span className="text-gray-700">{step}</span>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </div>
+                          )}
+
+                          {/* Description */}
                           {result.description && (
                             <div className="text-sm text-gray-700 pt-2 border-t border-gray-200">
                               {result.description}
