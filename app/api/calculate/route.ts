@@ -52,7 +52,7 @@ Return a JSON object with ONE of these structures:
   "details": string (explanation)
 }
 
-3. LOGIC TASK (If the query is a word problem with numbers that needs reasoning (like "bat and ball cost $1.10..."):
+3. LOGIC TASK (If the query is a word problem with numbers that needs reasoning (like "bat and ball cost 1.10..."):
 {
   "type":"reasoning",
   "answer":number,
