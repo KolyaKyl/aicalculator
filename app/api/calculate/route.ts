@@ -15,11 +15,12 @@ export async function POST(req: Request) {
       const simpleMath = math.evaluate(query);
       if (simpleMath !== undefined && !isNaN(simpleMath)) {
         return NextResponse.json({
+          type: 'math',
           result: Math.round(simpleMath * 100) / 100,
           unit: '',
           expression: query,
           steps: [],
-          description: `Result: ${simpleMath}`
+          description: `Simple math: ${query} = ${simpleMath}`
         });
       }
     } catch (e) {
@@ -51,7 +52,15 @@ Return a JSON object with ONE of these structures:
   "details": string (explanation)
 }
 
-3. UNKNOWN (if really can't understand):
+3. LOGIC TASK (If the query is a word problem with numbers that needs reasoning (like "bat and ball cost $1.10..."):
+{
+  "type":"reasoning",
+  "answer":number,
+  "steps":[...],
+  "description":"..."
+}
+
+4. UNKNOWN (if really can't understand):
 {
   "type": "unknown",
   "message": string (polite message asking to clarify)
@@ -71,13 +80,23 @@ Return: {"type":"calculated","answer":"Примерно 350 калорий","det
 Query: "how many pizzas for 10 people"
 Return: {"type":"calculated","answer":"About 3 pizzas","details":"10 people × 2-3 slices each ÷ 8 slices per pizza ≈ 3 pizzas"}
 
+Query: "A bat and a ball cost 1.10. The bat costs 1 more than the ball. How much is the ball?"
+Return: {"type": "reasoning","answer": 0.05,"steps": ["Let x = price of ball","Then bat = x + 1.00","Total: x + (x + 1.00) = 1.10","2x + 1.00 = 1.10","2x = 0.10","x = 0.05"],"description": "The ball costs 0.05, the bat costs 1.05"}
+
+Query: "Бита и мяч стоят 1.10. Бита стоит на 1 больше мяча. Сколько стоит мяч?"
+Return: {"type": "reasoning","answer": 0.05,"steps": ["Пусть x = цена мяча","Тогда бита = x + 1.00","Всего: x + (x + 1.00) = 1.10","2x + 1.00 = 1.10","2x = 0.10","x = 0.05"],"description": "Мяч стоит 0.05, бита стоит 1.05"}
+
 Query: "что такое любовь"
 Return: {"type":"unknown","message":"Я калькулятор и могу помочь только с вычислениями."}
 
 Query: "what is love"
 Return: {"type":"unknown","message":"I'm a calculator and can only help with calculations."}
 
-Return ONLY valid JSON.`
+ IMPORTANT: 
+  - Use the SAME LANGUAGE as the query for ALL text (steps, description)
+  - For word problems and logit tasks, solve step by step and show the reasoning
+  - do not add currency or units to the answer unless the user explicitly mentioned them in the query.
+  - Return ONLY valid JSON`
         },
         { role: 'user', content: query }
       ],
@@ -86,7 +105,7 @@ Return ONLY valid JSON.`
     });
 
     const content = response.choices[0].message.content || '';
-    
+
     // Парсим JSON
     let data;
     try {
@@ -113,7 +132,7 @@ Return ONLY valid JSON.`
             message: 'Invalid mathematical expression'
           });
         }
-        
+
         // Вычисляем
         try {
           const computed = math.evaluate(data.expression);
@@ -131,6 +150,13 @@ Return ONLY valid JSON.`
             message: 'Could not evaluate the expression'
           });
         }
+      case 'reasoning':
+        return NextResponse.json({
+          type: 'reasoning',
+          answer: data.answer,
+          steps: data.steps || [],
+          description: data.description || ''
+        });
 
       case 'calculated':
         return NextResponse.json({

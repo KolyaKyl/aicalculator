@@ -5,13 +5,13 @@ import { useState, useRef } from 'react';
 import VoiceInput from './components/VoiceInput';
 
 interface ResultData {
-  type?: 'math' | 'calculated' | 'unknown';
+  type?: 'math' | 'calculated' | 'unknown' | 'reasoning';
   result?: number;
   unit?: string;
   expression?: string;
-  steps?: Array<{ value: string; meaning: string }>;
+  steps?: Array<{ value: string; meaning: string }> | Array<string>;
   description?: string;
-  answer?: string;
+  answer?: number | string;
   details?: string;
   message?: string;
   error?: string;
@@ -269,7 +269,7 @@ export default function Home() {
                         const iconContainer = btn.querySelector('.icon-container');
                         const originalContent = iconContainer?.innerHTML || '';
 
-                        const textToCopy = `Your question: "${query}"\nAnswer: ${result.result?.toLocaleString()} ${result.unit || ''}\n\nDetails:\nExpression: ${result.expression || ''}\n${result.steps?.map(s => `${s.value} — ${s.meaning}`).join('\n') || ''}\n\nDescription: ${result.description || ''}\n\n— via AI Calculator (aicalculator.cloud)`;
+                        const textToCopy = `Your question: "${query}"\nAnswer: ${result.result?.toLocaleString()} ${result.unit || ''}\n\nDetails:\nExpression: ${result.expression || ''}\n${result.type === 'math' && result.steps ? (result.steps as { value: string; meaning: string }[]).map(s => `${s.value} — ${s.meaning}`).join('\n') : ''}\n\nDescription: ${result.description || ''}\n\n— via AI Calculator (aicalculator.cloud)`;
 
                         navigator.clipboard.writeText(textToCopy);
 
@@ -323,6 +323,13 @@ export default function Home() {
                           </span>
                         </div>
                       )}
+                      {result.type === 'reasoning' && (
+                        <div className="text-center">
+                          <span className="text-4xl font-light text-blue-600">
+                            ${typeof result.answer === 'number' ? result.answer.toFixed(2) : result.answer}
+                          </span>
+                        </div>
+                      )}
                       {result.type === 'calculated' && (
                         <p className="text-xl text-blue-700">{result.answer}</p>
                       )}
@@ -355,6 +362,25 @@ export default function Home() {
                                 <div key={idx} className="flex items-start gap-3 text-sm border-l-2 border-blue-200 pl-3">
                                   <span className="font-mono text-blue-600 min-w-[80px]">{step.value}</span>
                                   <span className="text-gray-700">— {step.meaning}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {result.description && (
+                            <div className="text-sm text-gray-700 pt-2 border-t border-gray-200">
+                              {result.description}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {result.type === 'reasoning' && (
+                        <div className="space-y-3">
+                          {result.steps && result.steps.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="text-xs text-gray-500">Reasoning:</div>
+                              {(result.steps as string[]).map((step, idx) => (
+                                <div key={idx} className="text-sm border-l-2 border-blue-200 pl-3">
+                                  <span className="text-gray-700">{step}</span>
                                 </div>
                               ))}
                             </div>
