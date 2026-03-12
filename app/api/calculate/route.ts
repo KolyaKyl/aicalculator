@@ -167,13 +167,7 @@ Always follow this structure and validate results before returning JSON.
             message: 'Invalid mathematical expression'
           });
         }
-        console.log('case:', 'math');
-        console.log('expression FROM GPT:', data.expression);
-        console.log('expression FROM GPT:', data.expression);
-        console.log('answer FROM GPT:', data.answer);
-        console.log('details FROM GPT:', data.details);
-        console.log('message FROM GPT:', data.message);
-        console.log('steps FROM GPT:', data.steps);
+
         // Вычисляем
         try {
           const computed = math.evaluate(data.expression);
@@ -193,12 +187,6 @@ Always follow this structure and validate results before returning JSON.
         }
 
       case 'reasoning':
-        console.log('case:', 'reasoning');
-        console.log('expression FROM GPT:', data.expression);
-        console.log('answer FROM GPT:', data.answer);
-        console.log('details FROM GPT:', data.details);
-        console.log('message FROM GPT:', data.message);
-        console.log('steps FROM GPT:', data.steps);
         return NextResponse.json({
           type: 'reasoning',
           answer: data.answer,
@@ -207,12 +195,6 @@ Always follow this structure and validate results before returning JSON.
         });
 
       case 'calculated':
-        console.log('case:', 'calculated');
-        console.log('expression FROM GPT:', data.expression);
-        console.log('answer FROM GPT:', data.answer);
-        console.log('details FROM GPT:', data.details);
-        console.log('message FROM GPT:', data.message);
-        console.log('steps FROM GPT:', data.steps);
         return NextResponse.json({
           type: 'calculated',
           answer: data.answer,
@@ -220,13 +202,6 @@ Always follow this structure and validate results before returning JSON.
         });
 
       case 'unknown':
-        console.log('case:', 'unknown');
-        console.log('expression FROM GPT:', data.expression);
-        console.log('answer FROM GPT:', data.answer);
-        console.log('details FROM GPT:', data.details);
-        console.log('message FROM GPT:', data.message);
-        console.log('steps FROM GPT:', data.steps);
-
         return NextResponse.json({
           type: 'unknown',
           message: data.message || 'Could not understand your request'
