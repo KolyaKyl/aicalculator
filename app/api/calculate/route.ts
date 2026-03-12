@@ -81,10 +81,10 @@ Query: "how many pizzas for 10 people"
 Return: {"type":"calculated","answer":"About 3 pizzas","details":"10 people × 2-3 slices each ÷ 8 slices per pizza ≈ 3 pizzas"}
 
 Query: "A bat and a ball cost 1.10. The bat costs 1 more than the ball. How much is the ball?"
-Return: {"type": "reasoning","answer": 0.05,"steps": ["Let x = price of ball","Then bat = x + 1.00","Total: x + (x + 1.00) = 1.10","2x + 1.00 = 1.10","2x = 0.10","x = 0.05"],"description": "The ball costs 0.05, the bat costs 1.05"}
+Return: {"type": "reasoning","answer": 0.05,"steps": ["Let x = price of ball","Then bat = x + 1","Total: x + (x + 1) = 1.10","2x + 1 = 1.10","2x = 0.10","x = 0.05"],"description": "The ball costs 0.05, the bat costs 1.05"}
 
 Query: "Бита и мяч стоят 1.10. Бита стоит на 1 больше мяча. Сколько стоит мяч?"
-Return: {"type": "reasoning","answer": 0.05,"steps": ["Пусть x = цена мяча","Тогда бита = x + 1.00","Всего: x + (x + 1.00) = 1.10","2x + 1.00 = 1.10","2x = 0.10","x = 0.05"],"description": "Мяч стоит 0.05, бита стоит 1.05"}
+Return: {"type": "reasoning","answer": 0.05,"steps": ["Пусть x = цена мяча","Тогда бита = x + 1","Всего: x + (x + 1) = 1.10","2x + 1 = 1.10","2x = 0.10","x = 0.05"],"description": "Мяч стоит 0.05, бита стоит 1.05"}
 
 Query: "что такое любовь"
 Return: {"type":"unknown","message":"Я калькулятор и могу помочь только с вычислениями."}
