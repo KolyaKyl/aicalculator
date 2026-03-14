@@ -12,7 +12,8 @@
 
 /* Фикс для Safari на iOS */
 html {
-  background-color: #f3f4f6; /* твой серый цвет */
+  background-color: #f3f4f6;
+  /* твой серый цвет */
   min-height: -webkit-fill-available;
 }
 
@@ -30,40 +31,64 @@ body {
   0% {
     background-position: 0% 50%;
   }
+
   25% {
     background-position: 50% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   75% {
     background-position: 50% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
 }
 
 .animate-gradientShift {
-  background: linear-gradient(
-    90deg,
-    #3b82f6,  /* синий */
-    #9333ea,  /* фиолетовый */
-    #f97316,  /* оранжевый */
-    #9333ea,  /* фиолетовый */
-    #3b82f6   /* синий */
-  );
+  background: linear-gradient(90deg,
+      #3b82f6,
+      /* синий */
+      #9333ea,
+      /* фиолетовый */
+      #f97316,
+      /* оранжевый */
+      #9333ea,
+      /* фиолетовый */
+      #3b82f6
+      /* синий */
+    );
   background-size: 300% 100%;
   animation: gradientShift 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.4s infinite;
 }
 
 @keyframes pulseScale {
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
   }

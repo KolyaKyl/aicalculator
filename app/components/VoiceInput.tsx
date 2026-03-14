@@ -29,7 +29,6 @@ export default function VoiceInput({
   
   const recognitionRef = useRef<any>(null);
 
-  // Доступные языки
   const languages = [
     { code: 'en-US', name: 'English', flag: '🇺🇸' },
     { code: 'ru-RU', name: 'Русский', flag: '🇷🇺' },
@@ -40,7 +39,6 @@ export default function VoiceInput({
     { code: 'ar-SA', name: 'العربية', flag: '🇸🇦' },
   ];
 
-  // Определяем язык браузера при загрузке
   useEffect(() => {
     if (language === 'auto') {
       const browserLang = navigator.language || navigator.languages?.[0] || 'en-US';
@@ -51,14 +49,10 @@ export default function VoiceInput({
     }
   }, [language]);
 
-  // Проверка поддержки Web Speech API
   useEffect(() => {
     const supported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     setIsSupported(supported);
-    
-    if (!supported) {
-      console.log('Web Speech API not supported in this browser');
-    }
+    if (!supported) console.log('Web Speech API not supported in this browser');
   }, []);
 
   useEffect(() => {
@@ -77,19 +71,13 @@ export default function VoiceInput({
     recognition.onresult = (event: any) => {
       const current = event.resultIndex;
       const transcriptText = event.results[current][0].transcript;
-      
-      if (event.results[current].isFinal) {
-        onResult(transcriptText);
-      }
+      if (event.results[current].isFinal) onResult(transcriptText);
     };
 
     recognition.onerror = (event: any) => {
       console.error('Speech error:', event.error);
       setIsListening(false);
-      
-      if (event.error === 'language-not-supported') {
-        setSelectedLang('en-US');
-      }
+      if (event.error === 'language-not-supported') setSelectedLang('en-US');
     };
 
     recognitionRef.current = recognition;
@@ -100,7 +88,6 @@ export default function VoiceInput({
       alert('Voice input is not supported in your browser. Try Chrome, Edge, or Safari.');
       return;
     }
-    
     if (isListening) {
       recognitionRef.current?.stop();
     } else {
@@ -108,17 +95,8 @@ export default function VoiceInput({
     }
   };
 
-  // Функция для смены языка (будет вызываться из родителя)
-  const changeLanguage = (code: string) => {
-    setSelectedLang(code);
-  };
-
   if (!isSupported) {
-    return (
-      <div className="text-sm text-gray-500">
-        🗣 Voice input not supported
-      </div>
-    );
+    return <div className="text-sm text-gray-500">🗣 Voice input not supported</div>;
   }
 
   return (
@@ -126,17 +104,22 @@ export default function VoiceInput({
       <button
         onClick={toggleListening}
         className={`
-          ${fullWidth ? 'w-full py-3' : 'w-14 h-14'}
-          flex items-center justify-center transition-all duration-300 relative overflow-hidden
-          ${isSquare ? 'rounded-xl' : 'rounded-full'}
+          ${fullWidth ? 'w-full py-5' : 'w-14 h-14'}
+          flex flex-col items-center justify-center gap-1.5 transition-all duration-300 relative overflow-hidden
+          ${isSquare ? 'rounded-3xl' : 'rounded-full'}
           ${isListening 
-            ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 scale-110 shadow-lg' 
-            : 'bg-gray-300 hover:bg-gray-400 hover:scale-105 shadow-md'}
+            ? 'animate-gradientShift text-white' 
+            : 'bg-gray-300 hover:bg-gray-400 hover:scale-105 shadow-md text-gray-700'}
         `}
       >
-        <span className={`relative z-10 text-xl transition-transform duration-300 ${isListening ? 'animate-pulse-scale text-white' : 'text-gray-700'}`}>
+        <span className={`relative z-10 text-xl transition-transform duration-300 ${isListening ? 'animate-pulse-scale' : ''}`}>
           🎙️
         </span>
+        {fullWidth && (
+          <span className={`relative z-10 text-xs font-medium ${isListening ? 'text-white' : 'text-gray-500'}`}>
+            Hold to speak
+          </span>
+        )}
       </button>
     </div>
   );
@@ -165,7 +148,6 @@ export const LanguageSelector = ({
 
   const currentLang = languages.find(l => l.code === selectedLang) || languages[0];
 
-  // Закрываем при клике вне
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -178,7 +160,6 @@ export const LanguageSelector = ({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Триггер как ссылка/текст */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -195,7 +176,6 @@ export const LanguageSelector = ({
         </svg>
       </button>
 
-      {/* Выпадающее меню без оверлея */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 z-10 bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px]">
           {languages.map((lang) => (
