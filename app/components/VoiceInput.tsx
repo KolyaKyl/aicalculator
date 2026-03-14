@@ -112,12 +112,12 @@ export default function VoiceInput({
             : 'bg-gray-300 hover:bg-gray-400 hover:scale-105 shadow-md text-gray-700'}
         `}
       >
-        <span className={`relative z-10 text-xl transition-transform duration-300 ${isListening ? 'animate-pulse-scale' : ''}`}>
+        <span className={`relative z-10 text-3xl transition-transform duration-300 ${isListening ? 'animate-pulse-scale' : ''}`}>
           🎙️
         </span>
         {fullWidth && (
           <span className={`relative z-10 text-xs font-medium ${isListening ? 'text-white' : 'text-gray-500'}`}>
-            Hold to speak
+            Tap to speak
           </span>
         )}
       </button>
