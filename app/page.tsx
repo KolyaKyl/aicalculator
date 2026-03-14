@@ -35,8 +35,8 @@ const InputCard = ({
   loading,
   selectedLang,
   setSelectedLang,
+  textareaRef,
 }: any) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const singleLineHRef = useRef<number | null>(null);
   const [expanded, setExpanded] = useState(false);
 
@@ -45,6 +45,19 @@ const InputCard = ({
   useEffect(() => {
     recalcHeight();
   }, [expanded]);
+
+  useEffect(() => {
+    if (!inputText) return;
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const limit = getSingleLineH();
+    requestAnimationFrame(() => {
+      ta.style.height = 'auto';
+      const sh = ta.scrollHeight;
+      ta.style.height = `${sh}px`;
+      if (sh > limit) setExpanded(true);
+    });
+  }, [inputText]);
 
   const getSingleLineH = (): number => {
     if (singleLineHRef.current !== null) return singleLineHRef.current;
@@ -96,6 +109,18 @@ const InputCard = ({
     }
   };
 
+  const handlePaste = () => {
+    requestAnimationFrame(() => {
+      const ta = textareaRef.current;
+      if (!ta) return;
+      const limit = getSingleLineH();
+      const sh = recalcHeight();
+      if (!expanded && sh > limit) {
+        setExpanded(true);
+      }
+    });
+  };
+
   const clearInput = () => {
     setInputText('');
     setExpanded(false);
@@ -139,6 +164,7 @@ const InputCard = ({
             value={inputText}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
             placeholder="e.g. 15% of 2340"
             rows={1}
             className="w-full border-none focus:outline-none resize-none bg-transparent leading-relaxed text-base py-2"
@@ -484,11 +510,22 @@ export default function Home() {
   const [result, setResult] = useState<ResultData | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedLang, setSelectedLang] = useState('en-US');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 
   const handleVoiceResult = async (text: string) => {
     setQuery(text);
     setInputText(text);
+
+    // Пересчитываем высоту после голосового ввода
+    requestAnimationFrame(() => {
+      const ta = textareaRef.current;
+      if (!ta) return;
+      ta.style.height = 'auto';
+      const sh = ta.scrollHeight;
+      ta.style.height = `${sh}px`;
+    });
+
     setLoading(true);
     setResult(null);
 
@@ -592,6 +629,7 @@ export default function Home() {
             loading={loading}
             selectedLang={selectedLang}
             setSelectedLang={setSelectedLang}
+            textareaRef={textareaRef}
           />
 
           {/* Кнопка микрофона (без карточки) */}

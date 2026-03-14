@@ -92,21 +92,22 @@ that can be evaluated directly. No additional comments or symbols. only math.js 
 3️⃣ LOGIC OR WORD PROBLEM
 {
 "type":"reasoning",
-"answer": number or array,
+"answer": number | number[] | {"key": value, ...},
 "steps":[
-"step 1",
-"step 2",
-...
+"step 1 with intermediate result",
+"step 2 with intermediate result",
+"Final: dogs=9, cats=2"
 ],
 "description":"short explanation"
 }
 
 RULES FOR LOGIC / REASONING:
+- Work through ALL steps first, THEN derive "answer" from the LAST step result.
+- "answer" MUST match the conclusion of your steps exactly. Double-check before returning.
 - SINGLE-VALUE → answer = number
-- MULTI-VALUE → answer = object with keys corresponding to variable names if known from text, otherwise numeric array
-- Steps must fully explain reasoning
-- Provide short description in description
-- Optional summary in details
+- MULTI-VALUE → answer = object with keys from the problem (e.g. {"dogs": 9, "cats": 2})
+- Steps must fully explain reasoning with intermediate results
+- The last step must contain the final answer explicitly
 
 4️⃣ UNKNOWN REQUEST
 {
@@ -128,6 +129,7 @@ Important Rules:
 - Time & dates: compute exact days/weeks; if age, calculate full years.
 - JSON must always be valid — do not include extra text and recompute before returning.
 - Use "calculated" instead of "math" for: date differences, age calculations, pace and running time, calories, real world estimations.
+- For reasoning type: compute steps sequentially, then set answer = result of final step. Never set answer independently of steps.
 
 Always follow this structure and validate results before returning JSON.
 `
@@ -186,13 +188,30 @@ Always follow this structure and validate results before returning JSON.
           });
         }
 
-      case 'reasoning':
+      case 'reasoning': {
+        // Парсим answer из последнего шага если это объект с числами
+        let answer = data.answer;
+
+        if (typeof answer === 'object' && !Array.isArray(answer)) {
+          // Пробуем вытащить числа из последнего шага
+          const lastStep = (data.steps || []).at(-1) || '';
+          const pairs = [...lastStep.matchAll(/([^\s=:,;]+)\s*[=:]\s*(\d+)/gu)];
+          if (pairs.length > 0) {
+            const parsed: Record<string, number> = {};
+            pairs.forEach(([, key, val]) => {
+              parsed[key] = Number(val);
+            });
+            answer = parsed;
+          }
+        }
+
         return NextResponse.json({
           type: 'reasoning',
-          answer: data.answer,
+          answer,
           steps: data.steps || [],
           description: data.description || ''
         });
+      }
 
       case 'calculated':
         return NextResponse.json({
