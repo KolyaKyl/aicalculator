@@ -17,16 +17,16 @@ interface VoiceInputProps {
   language?: string;
 }
 
-export default function VoiceInput({ 
-  onResult, 
-  isSquare = false, 
+export default function VoiceInput({
+  onResult,
+  isSquare = false,
   fullWidth = false,
   language = 'auto'
 }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const [selectedLang, setSelectedLang] = useState('en-US');
-  
+
   const recognitionRef = useRef<any>(null);
 
   const languages = [
@@ -60,14 +60,14 @@ export default function VoiceInput({
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
+
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = selectedLang;
 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
-    
+
     recognition.onresult = (event: any) => {
       const current = event.resultIndex;
       const transcriptText = event.results[current][0].transcript;
@@ -106,9 +106,9 @@ export default function VoiceInput({
         className={`
           ${fullWidth ? 'w-full py-5' : 'w-14 h-14'}
           flex flex-col items-center justify-center gap-1.5 transition-all duration-300 relative overflow-hidden
-          ${isSquare ? 'rounded-3xl' : 'rounded-full'}
-          ${isListening 
-            ? 'animate-gradientShift text-white' 
+          ${isSquare ? 'rounded-2xl md:rounded-3xl' : 'rounded-full'}
+          ${isListening
+            ? 'animate-gradientShift text-white'
             : 'bg-gray-300 hover:bg-gray-400 hover:scale-105 shadow-md text-gray-700'}
         `}
       >
@@ -126,16 +126,16 @@ export default function VoiceInput({
 }
 
 // Отдельный компонент для выбора языка (будет использоваться в родителе)
-export const LanguageSelector = ({ 
-  selectedLang, 
-  onLanguageChange 
-}: { 
-  selectedLang: string; 
+export const LanguageSelector = ({
+  selectedLang,
+  onLanguageChange
+}: {
+  selectedLang: string;
   onLanguageChange: (code: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const languages = [
     { code: 'en-US', name: 'English', flag: '🇺🇸', short: 'en' },
     { code: 'ru-RU', name: 'Русский', flag: '🇷🇺', short: 'ru' },
@@ -166,10 +166,10 @@ export const LanguageSelector = ({
       >
         <span>{currentLang.flag}</span>
         <span className="font-medium">{currentLang.short}</span>
-        <svg 
-          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
-          fill="none" 
-          stroke="currentColor" 
+        <svg
+          className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -185,9 +185,8 @@ export const LanguageSelector = ({
                 onLanguageChange(lang.code);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-100 flex items-center gap-2 ${
-                selectedLang === lang.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-              }`}
+              className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-100 flex items-center gap-2 ${selectedLang === lang.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                }`}
             >
               <span>{lang.flag}</span>
               <span>{lang.short}</span>

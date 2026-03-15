@@ -197,7 +197,7 @@ const InputCard = ({
   const canSend = inputText.trim().length > 0 && !loading;
 
   return (
-    <div className="bg-white rounded-3xl shadow-lg p-5 mb-3 relative">
+    <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg p-5 mb-3 relative">
       <div className="flex items-center justify-between">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
           WHAT TO CALCULATE?
