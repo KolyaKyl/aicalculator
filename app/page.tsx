@@ -596,8 +596,9 @@ export default function Home() {
           <div className="container mx-auto px-4 pt-14 pb-6 max-w-3xl">
 
             <div className="text-center mb-6">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 bg-clip-text text-transparent">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <img src="/favicon.svg" alt="AI Calculator logo" className="w-10 h-10" />
+                <h1 className="text-4xl font-bold text-gray-900">
                   AI Calculator
                 </h1>
               </div>
