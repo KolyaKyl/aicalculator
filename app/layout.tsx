@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AI Calculator — Ask Anything, Calculate Instantly",
     description:
-      "Voice-powered AI calculator. Calculate mortgage payments, salary after tax, currency, calories, percentages, tips, and more — just by speaking or typing naturally.",
+      "Free AI calculator for mortgage payments, salary after tax, currency conversion, percentages, tip, BMI, and everyday math. Just ask naturally — get instant answers with explanations.",
     url: "https://aicalculator.cloud",
     siteName: "AI Calculator",
     images: [
