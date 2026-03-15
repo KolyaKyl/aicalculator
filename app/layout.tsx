@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Calculator — Ask Anything, Calculate Instantly",
+  title: "AI Calculator",
   description:
     "AI-powered calculator for mortgage, salary, tip, BMI, currency conversion, percentages and more. Just ask in plain language — get the answer instantly.",
   metadataBase: new URL("https://aicalculator.cloud"),
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "AI Calculator — Ask Anything, Calculate Instantly",
+        alt: "Ask Anything, Calculate Instantly",
       },
     ],
     locale: "en_US",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Calculator — Ask Anything, Calculate Instantly",
+    title: "Ask Anything, Calculate Instantly",
     description:
       "AI-powered calculator for mortgage, salary, tip, BMI, currency and more.",
     images: ["/og.png"],
