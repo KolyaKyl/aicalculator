@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Calculator — Ask Anything, Calculate Instantly",
   description:
-    "Free AI-powered calculator for mortgage, salary, tip, BMI, currency conversion, percentages and more. Just ask in plain language — get the answer instantly.",
+    "AI-powered calculator for mortgage, salary, tip, BMI, currency conversion, percentages and more. Just ask in plain language — get the answer instantly.",
   metadataBase: new URL("https://aicalculator.cloud"),
   openGraph: {
-    title: "AI Calculator — Ask Anything, Calculate Instantly",
+    title: "Ask Anything, Calculate Instantly",
     description:
-      "Free AI-powered calculator for mortgage, salary, tip, BMI, currency conversion and more. Just ask in plain language.",
+      "AI-powered calculator for mortgage, salary, tip, BMI, currency conversion and more. Just ask in plain language.",
     url: "https://aicalculator.cloud",
     siteName: "AI Calculator",
     images: [
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AI Calculator — Ask Anything, Calculate Instantly",
     description:
-      "Free AI-powered calculator for mortgage, salary, tip, BMI, currency and more.",
+      "AI-powered calculator for mortgage, salary, tip, BMI, currency and more.",
     images: ["/og.png"],
   },
   icons: {
