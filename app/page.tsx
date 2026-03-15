@@ -19,7 +19,7 @@ interface ResultData {
   suggestion?: string;
 }
 
-// Иконка самолётик
+// ── Icons ─────────────────────────────────────────────────
 const SendIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -27,7 +27,78 @@ const SendIcon = () => (
   </svg>
 );
 
-// Компонент карточки ввода — ПРАВИЛЬНЫЙ №2 (с адаптивным layout)
+// ── Example cards data (вне компонента) ───────────────────
+const EXAMPLE_CARDS = [
+  {
+    icon: '🏠',
+    title: 'Mortgage & Loans',
+    desc: 'Monthly payments, total interest and loan affordability.',
+    query: 'Monthly payment on a $500k mortgage at 4% for 30 years?',
+  },
+  {
+    icon: '💰',
+    title: 'Taxes & Salary',
+    desc: 'Net pay after tax in the USA, UK, Germany and more.',
+    query: 'What is the net salary from $80k gross per year in the USA?',
+  },
+  {
+    icon: '🏃',
+    title: 'Workout & Nutrition',
+    desc: 'Calories, BMI, protein intake and fitness calculations.',
+    query: 'How many calories are in 200g of chicken breast?',
+  },
+  {
+    icon: '🍽️',
+    title: 'Tips & Percentages',
+    desc: 'Tip calculator and bill splitting for any group size.',
+    query: '20% tip on an $85 restaurant bill?',
+  },
+  {
+    icon: '💶',
+    title: 'Currency Converter',
+    desc: 'Convert between dollars, euros, pounds, yen and more.',
+    query: 'Convert 500 US dollars to euros',
+  },
+  {
+    icon: '√',
+    title: 'Math & Percentages',
+    desc: 'Percentages, discounts, splits and everyday math.',
+    query: 'What is 15% of 2340?',
+  },
+];
+
+// ── ExampleCards ──────────────────────────────────────────
+const ExampleCards = ({ onSelect }: { onSelect: (query: string) => void }) => (
+  <section aria-label="Popular calculations" className="mt-6">
+    <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 px-2">
+      Popular Calculations
+    </h2>
+    <p className="text-xs text-gray-400 mb-4 px-2">
+      Tap a category to see an example
+    </p>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {EXAMPLE_CARDS.map((card) => (
+        <button
+          key={card.title}
+          onClick={() => onSelect(card.query)}
+          className="w-full text-left p-4 bg-white border border-gray-200 rounded-2xl transition-all hover:bg-blue-50 hover:border-blue-300 active:scale-98"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+        >
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-xl">{card.icon}</span>
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              {card.title}
+            </h3>
+          </div>
+          <p className="text-xs text-gray-400 mb-2 leading-relaxed">{card.desc}</p>
+          <p className="text-xs text-gray-500 italic">&ldquo;{card.query}&rdquo;</p>
+        </button>
+      ))}
+    </div>
+  </section>
+);
+
+// ── InputCard ─────────────────────────────────────────────
 const InputCard = ({
   inputText,
   setInputText,
@@ -40,8 +111,6 @@ const InputCard = ({
   const singleLineHRef = useRef<number | null>(null);
   const [expanded, setExpanded] = useState(false);
 
-  // После того как expanded изменился и React перерисовал DOM,
-  // пересчитываем высоту — теперь поле уже имеет правильную ширину
   useEffect(() => {
     recalcHeight();
   }, [expanded]);
@@ -89,15 +158,11 @@ const InputCard = ({
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setInputText(value);
-
     const limit = getSingleLineH();
     const sh = recalcHeight();
-
     if (!expanded && sh > limit) {
-      // Кнопки уходят вниз → useEffect пересчитает высоту после ре-рендера
       setExpanded(true);
     } else if (expanded && value === '') {
-      // Возврат в однострочный режим только при полной очистке (гистерезис)
       setExpanded(false);
     }
   };
@@ -115,9 +180,7 @@ const InputCard = ({
       if (!ta) return;
       const limit = getSingleLineH();
       const sh = recalcHeight();
-      if (!expanded && sh > limit) {
-        setExpanded(true);
-      }
+      if (!expanded && sh > limit) setExpanded(true);
     });
   };
 
@@ -135,7 +198,6 @@ const InputCard = ({
 
   return (
     <div className="bg-white rounded-3xl shadow-lg p-5 mb-3 relative">
-      {/* Заголовок */}
       <div className="flex items-center justify-between">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
           WHAT TO CALCULATE?
@@ -148,16 +210,12 @@ const InputCard = ({
         </div>
       </div>
 
-      {/* Строка с текстом и кнопками */}
       <div className="flex items-center gap-2 mt-2">
-        {/* Кнопка плюс — скрывается в expanded */}
         {!expanded && (
           <button className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all">
             <span className="text-xl">➕</span>
           </button>
         )}
-
-        {/* Поле ввода — с правильным вертикальным выравниванием */}
         <div className="flex-1 min-w-0 flex items-center">
           <textarea
             ref={textareaRef}
@@ -168,15 +226,9 @@ const InputCard = ({
             placeholder="e.g. 15% of 2340"
             rows={1}
             className="w-full border-none focus:outline-none resize-none bg-transparent leading-relaxed text-base py-2"
-            style={{
-              lineHeight: '24px',
-              overflow: 'hidden',
-              minHeight: '40px',
-            }}
+            style={{ lineHeight: '24px', overflow: 'hidden', minHeight: '40px' }}
           />
         </div>
-
-        {/* Кнопка очистки — выровнена по центру */}
         {inputText && (
           <button
             onClick={clearInput}
@@ -186,16 +238,11 @@ const InputCard = ({
             ✕
           </button>
         )}
-
-        {/* Кнопка отправки — скрывается в expanded */}
         {!expanded && (
           <button
             onClick={handleSubmit}
             disabled={!canSend}
-            className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg transition-all ${canSend
-              ? 'text-blue-600 hover:text-blue-700 hover:bg-blue-50'
-              : 'text-gray-300 cursor-not-allowed'
-              }`}
+            className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg transition-all ${canSend ? 'text-blue-600 hover:text-blue-700 hover:bg-blue-50' : 'text-gray-300 cursor-not-allowed'}`}
             title="Send"
           >
             <SendIcon />
@@ -203,7 +250,6 @@ const InputCard = ({
         )}
       </div>
 
-      {/* Нижняя панель — появляется в expanded */}
       {expanded && (
         <div className="flex items-center justify-between mt-1 pt-2 border-t border-gray-100">
           <button className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all">
@@ -212,10 +258,7 @@ const InputCard = ({
           <button
             onClick={handleSubmit}
             disabled={!canSend}
-            className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all ${canSend
-              ? 'text-blue-600 hover:text-blue-700 hover:bg-blue-50'
-              : 'text-gray-300 cursor-not-allowed'
-              }`}
+            className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all ${canSend ? 'text-blue-600 hover:text-blue-700 hover:bg-blue-50' : 'text-gray-300 cursor-not-allowed'}`}
             title="Send"
           >
             <SendIcon />
@@ -226,23 +269,21 @@ const InputCard = ({
   );
 };
 
-// Компонент кнопки микрофона (без карточки, просто на странице)
-const MicButton = ({ onResult, selectedLang }: any) => {
-  return (
-    <div className="mb-3 flex flex-col items-center gap-1 w-full">
-      <div className="w-full">
-        <VoiceInput
-          onResult={onResult}
-          isSquare={true}
-          fullWidth={true}
-          language={selectedLang}
-        />
-      </div>
+// ── MicButton ─────────────────────────────────────────────
+const MicButton = ({ onResult, selectedLang }: any) => (
+  <div className="mb-3 flex flex-col items-center gap-1 w-full">
+    <div className="w-full">
+      <VoiceInput
+        onResult={onResult}
+        isSquare={true}
+        fullWidth={true}
+        language={selectedLang}
+      />
     </div>
-  );
-};
+  </div>
+);
 
-// Компонент Calculating
+// ── LoadingCard ───────────────────────────────────────────
 const LoadingCard = () => (
   <div className="bg-white rounded-3xl shadow-lg p-5 mt-3">
     <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
@@ -265,7 +306,7 @@ const LoadingCard = () => (
   </div>
 );
 
-// Компонент карточки результата
+// ── ResultCard ────────────────────────────────────────────
 const ResultCard = ({ result, query, setResult, loading }: any) => {
   if (loading) return null;
   if (!result) return null;
@@ -286,75 +327,68 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
 
   return (
     <div className="bg-white rounded-3xl shadow-lg p-5 mb-3 relative">
-      {/* Заголовок RESULT */}
       <div className="flex items-center justify-between">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
           RESULT
         </div>
       </div>
 
-      {/* Action buttons */}
       <div className="absolute top-2 right-2 flex items-center gap-1">
-        {result && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              const btn = e.currentTarget;
-              const iconContainer = btn.querySelector('.icon-container');
-              const originalContent = iconContainer?.innerHTML || '';
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            const btn = e.currentTarget;
+            const iconContainer = btn.querySelector('.icon-container');
+            const originalContent = iconContainer?.innerHTML || '';
 
-              let textToCopy = `Your question: "${query}"\nAnswer: `;
+            let textToCopy = `Your question: "${query}"\nAnswer: `;
 
-              if (result.type === 'math') {
-                textToCopy += `${result.result?.toLocaleString()} ${result.unit || ''}`;
-              } else if (result.type === 'reasoning') {
-                if (typeof result.answer === 'object') {
-                  textToCopy += Object.entries(result.answer as Record<string, any>).map(([k, v]) => `${k}: ${v}`).join(', ');
-                } else {
-                  textToCopy += result.answer;
-                }
-              } else if (result.type === 'calculated') {
-                textToCopy += result.answer;
+            if (result.type === 'math') {
+              textToCopy += `${result.result?.toLocaleString()} ${result.unit || ''}`;
+            } else if (result.type === 'reasoning') {
+              if (typeof result.answer === 'object') {
+                textToCopy += Object.entries(result.answer as Record<string, any>).map(([k, v]) => `${k}: ${v}`).join(', ');
               } else {
-                textToCopy += result.message || '';
+                textToCopy += result.answer;
               }
+            } else if (result.type === 'calculated') {
+              textToCopy += result.answer;
+            } else {
+              textToCopy += result.message || '';
+            }
 
-              textToCopy += `\n\nDetails:\n`;
+            textToCopy += `\n\nDetails:\n`;
 
-              if (result.type === 'math') {
-                textToCopy += `Expression: ${result.expression || ''}\n`;
-                if (result.steps) {
-                  textToCopy += (result.steps as any[]).map(s => `${s.value} — ${s.meaning}`).join('\n');
-                }
-              } else if (result.type === 'reasoning') {
-                if (result.steps) {
-                  textToCopy += (result.steps as string[]).join('\n');
-                }
-              } else if (result.type === 'calculated') {
-                textToCopy += result.details || '';
+            if (result.type === 'math') {
+              textToCopy += `Expression: ${result.expression || ''}\n`;
+              if (result.steps) {
+                textToCopy += (result.steps as any[]).map(s => `${s.value} — ${s.meaning}`).join('\n');
               }
-
-              if (result.description === '') { textToCopy += `\n\nDescription: ${result.description || ''}`; }
-
-              textToCopy += `\n\n aicalculator.cloud`;
-
-              navigator.clipboard.writeText(textToCopy);
-
-              if (iconContainer) {
-                iconContainer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-                setTimeout(() => {
-                  iconContainer.innerHTML = originalContent;
-                }, 1000);
+            } else if (result.type === 'reasoning') {
+              if (result.steps) {
+                textToCopy += (result.steps as string[]).join('\n');
               }
-            }}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            title="Copy result"
-          >
-            <span className="icon-container block w-5 h-5">
-              <CopyIcon />
-            </span>
-          </button>
-        )}
+            } else if (result.type === 'calculated') {
+              textToCopy += result.details || '';
+            }
+
+            if (result.description) { textToCopy += `\n\nDescription: ${result.description}`; }
+            textToCopy += `\n\n aicalculator.cloud`;
+
+            navigator.clipboard.writeText(textToCopy);
+
+            if (iconContainer) {
+              iconContainer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+              setTimeout(() => { iconContainer.innerHTML = originalContent; }, 1000);
+            }
+          }}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          title="Copy result"
+        >
+          <span className="icon-container block w-5 h-5">
+            <CopyIcon />
+          </span>
+        </button>
         <button
           onClick={() => setResult(null)}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -367,7 +401,6 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
       </div>
 
       <div className="space-y-6 pt-3">
-        {/* YOUR QUESTION */}
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             <span>📝</span> YOUR QUESTION
@@ -377,7 +410,6 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
           </div>
         </div>
 
-        {/* ANSWER */}
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             <span>✅</span> ANSWER
@@ -398,9 +430,7 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
                     : typeof result.answer === 'number'
                       ? result.answer.toFixed(2)
                       : typeof result.answer === 'object'
-                        ? Object.entries(result.answer)
-                          .map(([k, v]) => `${k}: ${v}`)
-                          .join(' | ')
+                        ? Object.entries(result.answer).map(([k, v]) => `${k}: ${v}`).join(' | ')
                         : String(result.answer)}
                 </span>
               </div>
@@ -414,7 +444,6 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
           </div>
         </div>
 
-        {/* DETAILS */}
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
             <span>🔍</span> DETAILS
@@ -495,7 +524,6 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
           </div>
         </div>
 
-        {/* DISCLAIMER */}
         <div className="text-center text-xs text-gray-400">
           <p>AI-generated. For reference only.</p>
         </div>
@@ -504,6 +532,7 @@ const ResultCard = ({ result, query, setResult, loading }: any) => {
   );
 };
 
+// ── Home ──────────────────────────────────────────────────
 export default function Home() {
   const [query, setQuery] = useState('');
   const [inputText, setInputText] = useState('');
@@ -512,12 +541,10 @@ export default function Home() {
   const [selectedLang, setSelectedLang] = useState('en-US');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-
   const handleVoiceResult = async (text: string) => {
     setQuery(text);
     setInputText(text);
 
-    // Пересчитываем высоту после голосового ввода
     requestAnimationFrame(() => {
       const ta = textareaRef.current;
       if (!ta) return;
@@ -533,146 +560,96 @@ export default function Home() {
       const res = await fetch('/api/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: text })
+        body: JSON.stringify({ query: text }),
       });
-
       const data = await res.json();
       setResult(data);
     } catch (error) {
-      setResult({
-        type: 'unknown',
-        message: 'Something went wrong. Please try again.'
-      });
+      setResult({ type: 'unknown', message: 'Something went wrong. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
 
   const handleSubmit = () => {
-    if (inputText.trim()) {
-      handleVoiceResult(inputText.trim());
-    }
-  };
-
-  const exampleCards = [
-    {
-      icon: '🏠',
-      title: 'MORTGAGE AND LOANS',
-      query: 'mortgage 500k 4% 30 years monthly payment',
-      color: 'blue'
-    },
-    {
-      icon: '💰',
-      title: 'TAXES AND SALARY',
-      query: 'salary 80K, what will be the net in USA',
-      color: 'yellow'
-    },
-    {
-      icon: '🏃',
-      title: 'WORKOUT AND NUTRITION',
-      query: 'calories in 200g of pasta',
-      color: 'orange'
-    },
-    {
-      icon: '🍽️',
-      title: 'TIPS AND PERCENTAGES',
-      query: '20% tip on $45',
-      color: 'green'
-    },
-    {
-      icon: '💶',
-      title: 'CURRENCIES CONVERSION',
-      query: '10 euros to dollars',
-      color: 'purple'
-    },
-    {
-      icon: '√',
-      title: 'MATH AND BASIC',
-      query: 'square root of 25',
-      color: 'gray'
-    }
-  ];
-
-  const getColorClass = (color: string) => {
-    switch (color) {
-      case 'blue': return 'bg-blue-50 hover:bg-blue-100 border-blue-200';
-      case 'green': return 'bg-green-50 hover:bg-green-100 border-green-200';
-      case 'purple': return 'bg-purple-50 hover:bg-purple-100 border-purple-200';
-      case 'yellow': return 'bg-yellow-50 hover:bg-yellow-100 border-yellow-200';
-      case 'orange': return 'bg-orange-50 hover:bg-orange-100 border-orange-200';
-      default: return 'bg-gray-50 hover:bg-gray-100 border-gray-200';
-    }
+    if (inputText.trim()) handleVoiceResult(inputText.trim());
   };
 
   return (
-    <main className="bg-gray-100" style={{ minHeight: '100dvh' }}>
-      <div className="min-h-screen bg-gray-100">
-        <div className="container mx-auto px-4 pt-14 pb-6 max-w-3xl">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            'name': 'AI Calculator',
+            'applicationCategory': 'UtilitiesApplication',
+            'description': 'Free AI calculator for mortgage, salary, tip, BMI, currency conversion, percentages and more',
+            'url': 'https://aicalculator.cloud',
+            'offers': { '@type': 'Offer', 'price': '0' },
+          }),
+        }}
+      />
+      <main className="bg-gray-100" style={{ minHeight: '100dvh' }}>
+        <div className="min-h-screen bg-gray-100">
+          <div className="container mx-auto px-4 pt-14 pb-6 max-w-3xl">
 
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 bg-clip-text text-transparent">
-                AI Calculator
-              </h1>
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 bg-clip-text text-transparent">
+                  AI Calculator
+                </h1>
+              </div>
+              <p className="text-gray-500 text-sm tracking-wide">
+                ASK ANYTHING · CALCULATE INSTANTLY
+              </p>
             </div>
-            <p className="text-gray-500 text-sm tracking-wide">
-              JUST ASK · GET INSTANT ANSWER
-            </p>
-          </div>
 
-          {/* Карточка ввода */}
-          <InputCard
-            inputText={inputText}
-            setInputText={setInputText}
-            handleSubmit={handleSubmit}
-            loading={loading}
-            selectedLang={selectedLang}
-            setSelectedLang={setSelectedLang}
-            textareaRef={textareaRef}
-          />
+            <InputCard
+              inputText={inputText}
+              setInputText={setInputText}
+              handleSubmit={handleSubmit}
+              loading={loading}
+              selectedLang={selectedLang}
+              setSelectedLang={setSelectedLang}
+              textareaRef={textareaRef}
+            />
 
-          {/* Кнопка микрофона (без карточки) */}
-          <MicButton
-            onResult={handleVoiceResult}
-            selectedLang={selectedLang}
-          />
+            <MicButton
+              onResult={handleVoiceResult}
+              selectedLang={selectedLang}
+            />
 
-          {/* Карточка результата (только если есть результат) */}
-          {loading && <LoadingCard />}
-          <ResultCard
-            result={result}
-            query={query}
-            setResult={setResult}
-            loading={loading}
-          />
+            {loading && <LoadingCard />}
+            <ResultCard
+              result={result}
+              query={query}
+              setResult={setResult}
+              loading={loading}
+            />
 
-          {/* Примеры (всегда снизу) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
-            {exampleCards.map((card, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleVoiceResult(card.query)}
-                className={`w-full text-left p-5 rounded-xl border transition-all ${getColorClass(card.color)}`}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl">{card.icon}</span>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{card.title}</h3>
-                </div>
-                <div className="text-sm text-gray-600 italic">
-                  "{card.query}"
-                </div>
-              </button>
-            ))}
-          </div>
+            <ExampleCards
+              onSelect={(q) => {
+                setInputText(q);
+                setTimeout(() => {
+                  if (textareaRef.current) {
+                    textareaRef.current.focus();
+                    const len = textareaRef.current.value.length;
+                    textareaRef.current.setSelectionRange(len, len);
+                  }
+                }, 50);
+              }}
+            />
 
-          {/* Footer */}
-          <div className="text-center text-xs text-gray-400 mt-8">
-            <p>⚡ Voice-powered · Natural language · AI inside ⚡</p>
-            <p className="mt-4">© 2026 AI Calculator — smart and simple.</p>
+            <div className="text-center text-xs text-gray-400 mt-8">
+              <p>⚡ Voice-powered · Natural language · AI inside ⚡</p>
+              <p className="mt-4">© 2026 AI Calculator — smart and simple.</p>
+            </div>
+
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
